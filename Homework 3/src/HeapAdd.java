@@ -5,7 +5,7 @@ public class HeapAdd{
     private ArrayList<Integer> arr;
     private int size;
 
-    public Heap() {
+    public HeapAdd() {
         arr = new ArrayList<>();
 
         this.insert(Integer.MAX_VALUE);
