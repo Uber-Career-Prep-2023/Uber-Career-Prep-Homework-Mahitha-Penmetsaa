@@ -1,71 +1,72 @@
 
-import java.util.HashMap;
 
 public class Trie {
-    public static void main(String[] args) {
-        Trie t = new Trie();
-        t.insert("hello");
+    public TrieNode root;
+    public Trie() {
+        root = new TrieNode();
     }
-    public static class TrieNode {
-        HashMap<Character, TrieNode> children;
-        boolean validWord;
-        public TrieNode() {
-            this.children = new HashMap<>();
+
+    public class TrieNode {
+        public TrieNode[] children;
+        public boolean validWord;
+        public TrieNode(){
+            this.children = new TrieNode[26];
             this.validWord = false;
         }
     }
 
-    TrieNode root = new TrieNode();
-
     public void insert(String word) {
-        insertHelper(word, root, 0);
-    }
+        word = word.toLowerCase();
+        TrieNode curr = root;
+        for(int i = 0; i < word.length(); i++){
+            char letter = word.charAt(i);
+            int index = letter - 'a';
 
-    public void insertHelper(String word, TrieNode n, int index) {
-        if (index == word.length()) {
-            n.validWord = true;
-            return;
+            if(curr.children[index] == null){
+                TrieNode node = new TrieNode();
+                curr.children[index] = node;
+                curr = node;
+            } else {
+                curr = curr.children[index];
+            }
         }
-        char c = word.charAt(index);
-        if (!n.children.containsKey(c)) {
-            n.children.put(c, new TrieNode());
-        }
-        insertHelper(word, n.children.get(c), index+1);
+        curr.validWord = true;
     }
 
     public boolean isValidWord(String word) {
-        return isValidWordHelper(word, root, 0);
-    }
-
-    public boolean isValidWordHelper(String word, TrieNode n, int index) {
-        if (index == word.length()) {
-            return n.validWord;
+        TrieNode curr = root;
+        for (int i =0; i < word.length(); i++){
+            char letter = word.charAt(i);
+            int index = letter - 'a';
+            if (curr.children[index] == null) {
+                return false;
+            }
+            curr = curr.children[index];
         }
-        char c = word.charAt(index);
-        if (!n.children.containsKey(c)) {
-            return false;
-        }
-        return isValidWordHelper(word, n.children.get(c), index+1);
+        return true;
     }
+    public TrieNode removeHelper(TrieNode curr, String word, int depth){
+        if (curr == null) {
+            return null;
+        }
+        if(depth == word.length()){
+            if (curr.validWord){
+                curr.validWord = false; //it
+            }
+            for(int i=0; i < curr.children.length; i++){
+                curr.children[i] = null;
+            }
+            return curr;
+        }
 
+        int index = word.charAt(depth)-'a';
+        curr.children[index] = removeHelper(curr.children[index], word, depth+1);
+
+        return curr;
+    }
     public void remove(String word) {
-        if (!isValidWord(word)) {
-            return;
-        }
-        validRemoveHelper(word, root, 0);
+        removeHelper(root, word, 0);
     }
 
-    public boolean validRemoveHelper(String word, TrieNode n, int index) {
-        char c = word.charAt(index);
-        if (index == word.length()) {
-            return n.children.isEmpty();
-        }
 
-        if (validRemoveHelper(word, n.children.get(c), index + 1)) {
-            n.children.remove(c);
-            return n.children.isEmpty();
-        } else {
-            return false;
-        }
-    }
 }
