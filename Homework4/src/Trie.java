@@ -5,14 +5,16 @@ public class Trie {
     public Trie() {
         root = new TrieNode();
     }
-
     public class TrieNode {
+
         public TrieNode[] children;
         public boolean validWord;
-        public TrieNode(){
+
+        public TrieNode() {
             this.children = new TrieNode[26];
             this.validWord = false;
         }
+
     }
 
     public void insert(String word) {
